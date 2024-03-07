@@ -60,7 +60,7 @@
 
 ## 실행 방법
 ### Docker compose
-1. Docker compose 설치
+1. **Docker compose 설치**
     ```shell
     curl -SL https://github.com/docker/compose/releases/download/v2.24.4/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
 
@@ -69,7 +69,7 @@
     ```shell
     docker-compose -v  # 버전 확인
     ```
-2. `docker-compose.yml` 파일 작성
+2. **`docker-compose.yml` 파일 작성**
     ```shell
     vi docker-compose.yml
     ```
@@ -95,7 +95,7 @@
     # container 내부 진입 후
     ls /etc/prometheus
     ```
-    여기에서 `prometheus.yml` 파일이 없거나 or 있어도 내용이 비어있으면, `docker-compose.yml`에서 파일 경로를 다시 확인할 것
+    > 여기에서 `prometheus.yml` 파일이 없거나 or 있어도 내용이 비어있으면, `docker-compose.yml`에서 파일 경로를 다시 확인할 것
 
 
 ### 수집 metric 확인
