@@ -5,9 +5,11 @@
 2. [실행 환경](#실행-환경)
     1. [GCP VM](#gcp-vm)
 3. [필요 파일](#필요-파일)
-    1. [Springboot](#1-springboot)
-    2. [Prometheus, Grafana](#2-prometheus-grafana)
-4. [그 외](#그-외)
+    1. [Springboot](#springboot)
+    2. [Prometheus, Grafana](#prometheus-grafana)
+4. [실행 방법](#실행-방법)
+    1. [Prometheus 및 Grafana 실행](#prometheus-및-grafana-실행)
+5. [그 외](#그-외)
     1. [데모용 프로젝트](#데모용-프로젝트)
 
 <br>
@@ -25,8 +27,11 @@
 |Docker1|Springboot proj|e2-medium (2 vCPU, 1 Core, 4 Mem)|고정 IP 주소 사용|
 |Docker2|Prometheus, Grafana|e2-medium (2 vCPU, 1 Core, 4 Mem)|고정 IP 주소 사용|
 
+### docker compose
+> 🐳 [v2.24.4 버전](https://github.com/docker/compose/releases/tag/v2.24.4) 사용
+
 ## 필요 파일
-### 1. Springboot
+### Springboot
 - prometheus가 metric 정보를 가져올 **Springboot 프로젝트**
 - Dockerfile: `docker build` 시 필요 (특별한 옵션 필요 X)
 - **[application.yml](/prometheus-grafana-in-docker/application.yml):** metric 수집 허용 정보
@@ -39,9 +44,66 @@ dependencies {
 }
 ```
 
-### 2. Prometheus, Grafana
+### Prometheus, Grafana
 - **[prometheus.yml](/prometheus-grafana-in-docker/prometheus.yml):** Prometheus 설정 파일
 - **[docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml):** docker-compose 실행 파일
+
+
+## 실행 방법
+### Docker compose
+1. Docker compose 설치
+```shell
+curl -SL https://github.com/docker/compose/releases/download/v2.24.4/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+
+chmod +x /usr/local/bin/docker-compose
+```
+```shell
+docker-compose -v  # 버전 확인
+```
+2. `docker-compose.yml` 파일 작성
+```shell
+vi docker-compose.yml
+```
+
+### Prometheus 및 Grafana 실행
+1. **`prometheus.yml` 작성**
+```shell
+vi prometheus.yml
+```
+2. **`docker-compose.yml` 파일에서 지정한 경로에 따라 `prometheus.yml` 파일 이동**
+```shell
+mv prometheus.yml /local/path/prometheus.yml
+```
+3. **docker-compose 실행**
+```shell
+docker-compose up -d
+```
+4. **실행 후, prometheus 컨테이너 내부 경로에서 파일 확인하기**
+```shell
+docker exec -it ${container} /bin/sh
+```
+```shell
+# container 내부 진입 후
+ls /etc/prometheus
+```
+여기에서 `prometheus.yml` 파일이 없거나 or 있어도 내용이 비어있으면, `docker-compose.yml`에서 파일 경로를 다시 확인할 것
+
+
+### 수집 metric 확인
+1. **actuator http 경로 진입 화면**
+```
+http://${vm-public-ip}:8080/actuator/prometheus
+```
+![http](/prometheus-grafana-in-docker/img/http-actuator-prometheus.png)
+
+2. **Prometheus에서 Target 확인**
+
+![prom](/prometheus-grafana-in-docker/img/prom-actuator.png)
+
+
+3. **Grafana에서 Dashboard 설정 후**
+
+![graf](/prometheus-grafana-in-docker/img/graf-actuator.png)
 
 
 ## 그 외
@@ -57,8 +119,3 @@ docker pull ftest5916/team5-deal2:v1.1
 ```shell
 docker run -p 8080:8080 --name springboot ftest5916/team5-deal2:v1.1
 ```
-- **수집 metric 정보 확인**
-```
-http://${vm-public-ip}:8080/actuator/prometheus
-```
-![http](/prometheus-grafana-in-docker/img/http-actuator-prometheus.png)
