@@ -4,15 +4,16 @@
 1. [들어가기 전에](#들어가기-전에)
 2. [실행 환경](#실행-환경)
     1. [GCP VM](#gcp-vm)
-    2. [docker compose 버전](#docker-compose-버전)
+    2. [Docker compose](#docker-compose)
 3. [필요 파일](#필요-파일)
     1. [Springboot](#springboot)
     2. [Prometheus, Grafana](#prometheus-grafana)
 4. [실행 방법](#실행-방법)
-    1. [Docker compose](#docker-compose)
-    2. [Prometheus 및 Grafana 실행](#prometheus-및-grafana-실행)
-    3. [수집 metric 확인](#수집-metric-확인)
-
+    1. [Springboot 프로젝트 설정 파일 작성](#springboot-프로젝트-설정-파일-작성)
+    2. [Docker compose 설정](#docker-compose-설정)
+    3. [Prometheus 및 Grafana 실행](#prometheus-및-grafana-실행)
+    4. [Springboot 프로젝트 실행](#springboot-프로젝트-실행)
+    5. [수집 metric 확인](#수집-metric-확인)
 5. [그 외](#그-외)
     1. [데모용 프로젝트](#데모용-프로젝트)
 
@@ -33,7 +34,7 @@
 |Docker1|Springboot proj|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
 |Docker2|Prometheus, Grafana|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
 
-### docker compose 버전
+### Docker compose
 > 🐳 [v2.24.4 버전](https://github.com/docker/compose/releases/tag/v2.24.4) 사용
 
 <br>
@@ -59,7 +60,13 @@
 <br>
 
 ## 실행 방법
-### Docker compose
+### Springboot 프로젝트 설정 파일 작성
+1. `build.gradle` 의존성 추가
+2. `application.yml` 수정
+3. `.jar` 파일 빌드
+4. `Dockerfile` 사용하여 Docker 빌드 및 실행
+
+### Docker compose 설정
 1. **Docker compose 설치**
     ```shell
     curl -SL https://github.com/docker/compose/releases/download/v2.24.4/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
@@ -97,6 +104,10 @@
     ```
     > 여기에서 `prometheus.yml` 파일이 없거나 or 있어도 내용이 비어있으면, `docker-compose.yml`에서 파일 경로를 다시 확인할 것
 
+### Springboot 프로젝트 실행
+```shell
+docker run -p 8080:8080 --name ${container-name} ${image-name}
+```
 
 ### 수집 metric 확인
 #### actuator http 경로 진입 화면
@@ -105,12 +116,12 @@ http://${vm-public-ip}:8080/actuator/prometheus
 ```
 ![http](/prometheus-grafana-in-docker/img/http-actuator-prometheus.png)
 
-#### **Prometheus에서 Target 확인**
+#### Prometheus에서 Target 확인
 
 ![prom](/prometheus-grafana-in-docker/img/prom-actuator.png)
 
 
-#### **Grafana에서 Dashboard 설정 후**
+#### Grafana에서 Dashboard 설정 후
 
 ![graf](/prometheus-grafana-in-docker/img/graf-actuator.png)
 
