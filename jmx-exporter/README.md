@@ -79,19 +79,11 @@ dependencies {
 - `prometheus.yml`파일은 현재 디렉토리의 파일을 사용합니다.
 
 ### Springboot 프로젝트 실행
+ > **첫 번째 포트 =** Springboot 프로젝트 <br>
+ **두 번째 포트 =** JMX exporter
 ```shell
 docker run -p 8080:8080 -p 9090:9090 --name ${container-name} ${image-name}
 ```
-
-- **docker container 조회하여 포트 번호 확인**
-    ```shell
-    docker container ls
-    ```
-    ```
-    # 조회 결과
-    CONTAINER ID   IMAGE                        COMMAND                  CREATED          STATUS          PORTS                                                                                  NAMES
-    ae8a40dbbfe2   ftest5916/team5-deal2:v1.5   "java -javaagent:/ap…"   59 minutes ago   Up 59 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   springboot
-    ```
 
 
 ### 수집 metric 확인
