@@ -13,7 +13,8 @@
     1. [Springboot 프로젝트 설정 파일 작성](#springboot-프로젝트-설정-파일-작성)
     2. [Docker compose 설정](#docker-compose-설정)
     3. [Prometheus 및 Grafana 실행](#prometheus-및-grafana-실행)
-    4. [수집 metric 확인](#수집-metric-확인)
+    4. [Springboot 프로젝트 실행](#springboot-프로젝트-실행)
+    5. [수집 metric 확인](#수집-metric-확인)
 5. [그 외](#그-외)    
     1. [데모용 프로젝트](#데모용-프로젝트)
 
@@ -76,6 +77,22 @@ dependencies {
 ### Prometheus 및 Grafana 실행
 - [Prometheus, Grafana Monitoring in Docker의 Prometheus 및 Grafana 실행](/prometheus-grafana-in-docker/README.md#prometheus-및-grafana-실행) 참고
 - `prometheus.yml`파일은 현재 디렉토리의 파일을 사용합니다.
+
+### Springboot 프로젝트 실행
+```shell
+docker run -p 8080:8080 -p 9090:9090 --name ${container-name} ${image-name}
+```
+
+- **docker container 조회하여 포트 번호 확인**
+    ```shell
+    docker container ls
+    ```
+    ```
+    # 조회 결과
+    CONTAINER ID   IMAGE                        COMMAND                  CREATED          STATUS          PORTS                                                                                  NAMES
+    ae8a40dbbfe2   ftest5916/team5-deal2:v1.5   "java -javaagent:/ap…"   59 minutes ago   Up 59 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   springboot
+    ```
+
 
 ### 수집 metric 확인
 #### jmx http 경로 진입 화면
