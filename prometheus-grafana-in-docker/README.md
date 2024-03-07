@@ -25,28 +25,37 @@
 |Docker2|Prometheus, Grafana|e2-medium (2 vCPU, 1 Core, 4 Mem)|고정 IP 주소 사용|
 
 ### 데모용 프로젝트
-> 🐳 [ftest5916/team5-deal2:v1.5](https://hub.docker.com/r/ftest5916/team5-deal2/tags) (업데이트 시 갱신 예정) <br>
+> 🐳 [ftest5916/team5-deal2:v1.1](https://hub.docker.com/r/ftest5916/team5-deal2/tags) (업데이트 시 갱신 예정) <br>
 > ⚠️ 실행할 Springboot 프로젝트가 있는 경우에는 무시하세요.
 
-- docker image pull
+- **docker image pull**
 ```shell
 docker pull ftest5916/team5-deal2:v1.1
 ```
-- docker run
+- **docker run**
 ```shell
 docker run -p 8080:8080 --name springboot ftest5916/team5-deal2:v1.1
 ```
-- 
+- **수집 metric 정보 확인**
 ```
-http://${vm-public-ip}:8080/actuator/
+http://${vm-public-ip}:8080/actuator/prometheus
 ```
 
 
 ## 필요 파일
 ### 1. Springboot
 - prometheus가 metric 정보를 가져올 Springboot 프로젝트
-- [application.yml](/prometheus-grafana-in-docker/application.yml)
+- Dockerfile: `docker build` 시 필요 (특별한 옵션 필요 X)
+- [application.yml](/prometheus-grafana-in-docker/application.yml): metric 수집 허용 정보
+- `build.gradle` 의존성 추가
+```gradle
+dependencies {
+    // ... 생략
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+}
+```
 
 ### 2. Prometheus, Grafana
-- [docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml)
-- [prometheus.yml](/prometheus-grafana-in-docker/prometheus.yml)
+- [prometheus.yml](/prometheus-grafana-in-docker/prometheus.yml): Prometheus 설정 파일
+- [docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml): docker-compose 실행 파일
