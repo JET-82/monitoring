@@ -1,4 +1,4 @@
-## JMX monitoring in Docker
+# JMX monitoring in Docker
 
 ### 목차
 1. [들어가기 전에](#들어가기-전에)
@@ -12,13 +12,13 @@
 
 <br>
 
-### 들어가기 전에
+## 들어가기 전에
 1. **[Prometheus, Grafana Monitoring in Docker](/prometheus-grafana-in-docker/README.md)에서 JMX exporter 모니터링을 추가한 버전입니다.** 마찬가지로 Docker container에서 Prometheus와 Grafana를 실행합니다.
 2. 현재 버전은 Docker container에서 Springboot 프로젝트를 실행하는 것을 기준으로 진행합니다. (추후 k8s 버전도 갱신 예정)
 
 
-### 실행 환경
-#### GCP VM
+## 실행 환경
+### GCP VM
 > 해당 모니터링 테스트는 GCP VM에서 진행했습니다.
 
 |VM 구분|실행 구분|VM 유형|비고|
@@ -26,10 +26,10 @@
 |Docker1|Springboot proj|e2-medium (2 vCPU, 1 Core, 4 Mem)|고정 IP 주소 사용|
 |Docker2|Prometheus, Grafana|e2-medium (2 vCPU, 1 Core, 4 Mem)|고정 IP 주소 사용|
 
-#### JMX Exporter
+### JMX Exporter
 > 🕵️ [jmx_prometheus_javaagent-0.20.0 버전](https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar) (모니터링 테스트 당시 최신 버전)
 
-#### 데모용 프로젝트
+### 데모용 프로젝트
 > 🐳 [ftest5916/team5-deal2:v1.5](https://hub.docker.com/r/ftest5916/team5-deal2/tags) (업데이트 시 갱신 예정) <br>
 > ⚠️ 실행할 Springboot 프로젝트가 있는 경우에는 무시하세요.
 
@@ -52,13 +52,13 @@ CONTAINER ID   IMAGE                        COMMAND                  CREATED    
 ae8a40dbbfe2   ftest5916/team5-deal2:v1.5   "java -javaagent:/ap…"   59 minutes ago   Up 59 minutes   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp, 0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   springboot
 ```
 
-### 필요 파일
-#### 1. Springboot
+## 필요 파일
+### 1. Springboot
 - prometheus가 metric 정보를 가져올 Springboot 프로젝트
 - [application.yml](/jmx-exporter/application.yml)
 - [Dockerfile](/jmx-exporter/Dockerfile)
 - [config.yaml](/jmx-exporter/config.yaml)
 
-#### 2. Prometheus, Grafana
-- [prometheus.yml](/prometheus-grafana-in-docker/prometheus.yml)
+### 2. Prometheus, Grafana
+- [prometheus.yml](/jmx-exporter/prometheus.yml)
 - [docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml)
