@@ -33,16 +33,16 @@
 > 🐳 [ftest5916/team5-deal2:v1.5](https://hub.docker.com/r/ftest5916/team5-deal2/tags) (업데이트 시 갱신 예정) <br>
 > ⚠️ 실행할 Springboot 프로젝트가 있는 경우에는 무시하세요.
 
-- docker image pull
+- **docker image pull**
 ```shell
 docker pull ftest5916/team5-deal2:v1.5
 ```
-- docker run
+- **docker run**
 ```shell
 docker run -p 8080:8080 -p 9090:9090 --name springboot ftest5916/team5-deal2:v1.5
 ```
 
-- docker container 조회
+- **docker container 조회**
 ```shell
 docker container ls
 ```
@@ -55,10 +55,18 @@ ae8a40dbbfe2   ftest5916/team5-deal2:v1.5   "java -javaagent:/ap…"   59 minute
 ## 필요 파일
 ### 1. Springboot
 - prometheus가 metric 정보를 가져올 Springboot 프로젝트
-- [application.yml](/jmx-exporter/application.yml)
-- [Dockerfile](/jmx-exporter/Dockerfile)
-- [config.yaml](/jmx-exporter/config.yaml)
+- [application.yml](/jmx-exporter/application.yml): metric 수집 허용 정보
+- `build.gradle` 의존성 추가
+```gradle
+dependencies {
+    // ... 생략
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+}
+```
+- [Dockerfile](/jmx-exporter/Dockerfile): `docker build` 시 필요
+- [config.yaml](/jmx-exporter/config.yaml): `docker build` 시 필요
 
 ### 2. Prometheus, Grafana
-- [prometheus.yml](/jmx-exporter/prometheus.yml)
-- [docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml)
+- [prometheus.yml](/jmx-exporter/prometheus.yml): Prometheus 설정 파일
+- [docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml): docker-compose 실행 파일
