@@ -21,7 +21,7 @@
 <br>
 
 ## 들어가기 전에
-1. **[Prometheus, Grafana Monitoring in Docker](/prometheus-grafana-in-docker/README.md)에서 JMX exporter 모니터링을 추가한 버전입니다.** 마찬가지로 Docker container에서 Prometheus와 Grafana를 실행합니다.
+1. **[Prometheus, Grafana Monitoring in Docker](/prometheus-in-docker/README.md)에서 JMX exporter 모니터링을 추가한 버전입니다.** 마찬가지로 Docker container에서 Prometheus와 Grafana를 실행합니다.
 2. 현재 버전은 Docker container에서 Springboot 프로젝트를 실행하는 것을 기준으로 진행합니다. (추후 k8s 버전도 갱신 예정)
 
 
@@ -59,7 +59,7 @@ dependencies {
 
 ### 2. Prometheus, Grafana
 - **[prometheus.yml](/jmx-exporter/prometheus.yml):** Prometheus 설정 파일
-- **[docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml):** docker-compose 실행 파일
+- **[docker-compose.yml](/prometheus-in-docker/docker-compose.yml):** docker-compose 실행 파일
 
 <br>
 
@@ -71,11 +71,11 @@ dependencies {
 4. `Dockerfile` 사용하여 Docker 빌드 및 실행
 
 ### Docker compose 설정
-- [Prometheus, Grafana Monitoring in Docker의 Grafana Docker compose 설정](/prometheus-grafana-in-docker/README.md#docker-compose-설정) 참고
+- [Prometheus, Grafana Monitoring in Docker의 Grafana Docker compose 설정](/prometheus-in-docker/README.md#docker-compose-설정) 참고
 - `docker-compose.yml`파일은 현재 디렉토리의 파일을 사용합니다.
 
 ### Prometheus 및 Grafana 실행
-- [Prometheus, Grafana Monitoring in Docker의 Prometheus 및 Grafana 실행](/prometheus-grafana-in-docker/README.md#prometheus-및-grafana-실행) 참고
+- [Prometheus, Grafana Monitoring in Docker의 Prometheus 및 Grafana 실행](/prometheus-in-docker/README.md#prometheus-및-grafana-실행) 참고
 - `prometheus.yml`파일은 현재 디렉토리의 파일을 사용합니다.
 
 ### Springboot 프로젝트 실행
