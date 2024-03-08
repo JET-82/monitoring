@@ -13,8 +13,8 @@
     2. [Docker compose 설정](#docker-compose-설정)
     3. [Prometheus 및 Grafana 실행](#prometheus-및-grafana-실행)
     4. [Springboot 프로젝트 실행](#springboot-프로젝트-실행)
-    5. [수집 metric 확인](#수집-metric-확인)
-5. [그 외](#그-외)
+5. [수집 metric 확인](#수집-metric-확인)
+6. [그 외](#그-외)
     1. [데모용 프로젝트](#데모용-프로젝트)
 
 <br>
@@ -43,7 +43,7 @@
 ### Springboot
 - prometheus가 metric 정보를 가져올 **Springboot 프로젝트**
 - Dockerfile: `docker build` 시 필요 (특별한 옵션 필요 X)
-- **[application.yml](/prometheus-grafana-in-docker/application.yml):** metric 수집 허용 정보
+- **[application.yml](/prometheus-in-docker/application.yml):** metric 수집 허용 정보
 - **`build.gradle` 의존성** 추가
     ```gradle
     dependencies {
@@ -54,8 +54,8 @@
     ```
 
 ### Prometheus, Grafana
-- **[prometheus.yml](/prometheus-grafana-in-docker/prometheus.yml):** Prometheus 설정 파일
-- **[docker-compose.yml](/prometheus-grafana-in-docker/docker-compose.yml):** docker-compose 실행 파일
+- **[prometheus.yml](/prometheus-in-docker/prometheus.yml):** Prometheus 설정 파일
+- **[docker-compose.yml](/prometheus-in-docker/docker-compose.yml):** docker-compose 실행 파일
 
 <br>
 
@@ -109,21 +109,21 @@
 docker run -p 8080:8080 --name ${container-name} ${image-name}
 ```
 
-### 수집 metric 확인
-#### actuator http 경로 진입 화면
+## 수집 metric 확인
+### actuator http 경로 진입 화면
 ```
 http://${vm-public-ip}:8080/actuator/prometheus
 ```
-![http](/prometheus-grafana-in-docker/img/http-actuator-prometheus.png)
+![http](/prometheus-in-docker/img/http-actuator-prometheus.png)
 
-#### Prometheus에서 Target 확인
+### Prometheus에서 Target 확인
 
-![prom](/prometheus-grafana-in-docker/img/prom-actuator.png)
+![prom](/prometheus-in-docker/img/prom-actuator.png)
 
 
-#### Grafana에서 Dashboard 설정 후
+### Grafana에서 Dashboard 설정 후
 
-![graf](/prometheus-grafana-in-docker/img/graf-actuator.png)
+![graf](/prometheus-in-docker/img/graf-actuator.png)
 
 <br>
 
