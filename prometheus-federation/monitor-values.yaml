@@ -1,0 +1,40 @@
+grafana:
+  defaultDashboardsTimezone: Asia/Seoul
+  adminPassword: ${grafana-pw} # 생략 가능, default=admin
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+
+prometheus:
+  service:
+    type: LoadBalancer
+    port: 30653 # 생략 가능, default=9090
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 5d
+    retentionSize: "10GiB"
+    additionalScrapeConfigs:
+      # 수정 필요
+      - job_name: federate
+        metrics_path: /federate
+        scrape_interval: 10s
+        honor_labels: true
+        params: # 필요에 맞게 수정
+          'match[]':
+            - '{job="prometheus"}'
+            - '{job="node"}'
+            - '{__name__=~".+"}'
+            - '{__name__=~"job:.*"}'
+            - '{__name__="server_labels"}'
+        static_configs:
+          # 수정 필요
+          - targets:
+            - '${target-ingress-controller-hostname}:${target-prometheus-port}'
