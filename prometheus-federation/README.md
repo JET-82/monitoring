@@ -34,7 +34,7 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 |:--|:--|:--|:--:|:--:|
 |Docker1|bastion host|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
 
-### [helm-chart/kube-prometheus-stack](helm-charts/charts/kube-prometheus-stack/)
+### [helm-chart/kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
 > **v45.7.1** 버전 사용
 
 ```shell
