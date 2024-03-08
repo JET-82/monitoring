@@ -14,8 +14,8 @@
     2. [Docker compose 설정](#docker-compose-설정)
     3. [Prometheus 및 Grafana 실행](#prometheus-및-grafana-실행)
     4. [Springboot 프로젝트 실행](#springboot-프로젝트-실행)
-    5. [수집 metric 확인](#수집-metric-확인)
-5. [그 외](#그-외)    
+5. [수집 metric 확인](#수집-metric-확인)
+6. [그 외](#그-외)    
     1. [데모용 프로젝트](#데모용-프로젝트)
 
 <br>
@@ -86,17 +86,17 @@ docker run -p 8080:8080 -p 9090:9090 --name ${container-name} ${image-name}
 ```
 
 
-### 수집 metric 확인
-#### jmx http 경로 진입 화면
+## 수집 metric 확인
+### jmx http 경로 진입 화면
 
 ![http](/jmx-exporter/img/http-jmx-exporter.png)
 
-#### Prometheus에서 Target 확인
+### Prometheus에서 Target 확인
 
 ![prom](/jmx-exporter/img/prom-jmx-exporter.png)
 
 
-#### Grafana에서 Dashboard 설정 후
+### Grafana에서 Dashboard 설정 후
 
 ![graf](/jmx-exporter/img/graf-jmx-dashboard.png)
 
