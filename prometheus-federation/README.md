@@ -49,23 +49,27 @@ helm pull prometheus-community/kube-prometheus-stack --version 45.7.1
 - **EKS 생성 후 awscli에서 접근:**
 ```shell
 aws eks --region ${eks-region} update-kubeconfig \
-        --name ${eks-name}
+    --name ${eks-name}
 ```
 
 <br>
 
 ## 수집 metric 확인
-### `/federate` http 경로 진입 화면
+### /federate http 경로 진입 화면
 
 ![http](/prometheus-federation/img/http-federate.png)
 
 ### Prometheus에서 Target 확인
 
-![prom](/prometheus-federation/img/prom-federate.png)
+#### case 1. 1개의 EKS만 타겟에 추가
+![prom1](/prometheus-federation/img/prom-federate1.png)
+
+#### case 2. 2개의 EKS와 1개의 JMX exporter를 타겟에 추가
+![prom2](/prometheus-federation/img/prom-federate2.png)
 
 ### Grafana에서 Dashboard 설정 후
 > metric 수집 클러스터의 노드 3개 + 관찰 클러스터 노드 3개 = 총 6개의 노드
-
+#### case 1. 1개의 EKS만 타겟에 추가
 ![graf1](/prometheus-federation/img/graf-federate1.png)
 ![graf2](/prometheus-federation/img/graf-federate2.png)
 
