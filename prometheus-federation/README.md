@@ -1,5 +1,5 @@
 # Prometheus Federation
-(아직 작성 중 입니다.)
+(완성된 문서가 아닙니다.)
 
 ## 공식 문서
 Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/prometheus/latest/federation/)를 확인하세요.<br>
@@ -27,14 +27,14 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 
 ## 실행 환경
 ### GCP VM
-> 해당 모니터링 테스트는 **GCP VM**을 bastion host로 사용했습니다.<br>
+> 해당 모니터링 테스트는 **GCP VM**을 bastion host처럼 사용했습니다.<br>
 > `helm`과 `kubectl`은 local bash에서도 실행 가능합니다.
 
 |VM 구분|실행 구분|VM 유형|OS|비고|
 |:--|:--|:--|:--:|:--:|
-|Docker1|bastion host|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
+|operator|helm|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
 
-### [helm-chart/kube-prometheus-stack](helm-charts/charts/kube-prometheus-stack/)
+### [helm-chart/kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
 > **v45.7.1** 버전 사용
 
 ```shell
