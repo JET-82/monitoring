@@ -19,11 +19,15 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 3. [필요 파일](#필요-파일)
 4. [실행 방법](#실행-방법)
 5. [수집 metric 확인](#수집-metric-확인)
-6. [주의](#주의)
+6. [그 외](#그-외)
 
 <br>
 
 ## 들어가기 전에
+1. elm operator를 사용해 Prometheus와 Grafana를 Amazon EKS에서 실행하고 메트릭을 수집합니다.
+2. [Prometheus federation](https://prometheus.io/docs/prometheus/latest/federation/)을 사용하여 여러 클러스터로부터 메트릭을 수집합니다.
+
+<br>
 
 ## 실행 환경
 ### GCP VM
@@ -69,9 +73,15 @@ aws eks --region ${eks-region} update-kubeconfig \
 
 ### Grafana에서 Dashboard 설정 후
 > metric 수집 클러스터의 노드 3개 + 관찰 클러스터 노드 3개 = 총 6개의 노드
+
 #### case 1. 1개의 EKS만 타겟에 추가
 ![graf1](/prometheus-federation/img/graf-federate1.png)
 ![graf2](/prometheus-federation/img/graf-federate2.png)
+
+#### case 2. JMX exporter metric 확인 (임시)
+
+![jmx1](/prometheus-federation/img/jmx-example1.png)
+![jmx2](/prometheus-federation/img/jmx-example2.png)
 
 <br>
 
@@ -91,7 +101,7 @@ kubectl get svc -n monitoring kube-prometheus-stack-grafana -o \
 
 <br>
 
-## 주의
+## 그 외
 **오퍼레이터 실행 시 사용할 `.yaml` 파일 내용 중에서, metric을 수집 당하는 클러스터의 경우에는 target 설정이 필요가 없습니다.** 그래서 중앙에서 metric을 수집하는 클러스터와 수집 당하는 클러스터의 `.yaml` 파일은 서로 구분해서 저장해두는 것이 편합니다.
 
 - 예를 들어서:
