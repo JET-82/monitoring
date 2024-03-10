@@ -1,0 +1,20 @@
+grafana:
+  enabled: false # grafana 비활성화
+
+alertmanager:
+  enabled: false
+
+prometheus:
+  service:
+    type: LoadBalancer
+    port: 30653 # 생략 가능, default=9090
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+  agentMode: true # prometheus agent mode 활성화
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 5d
+    retentionSize: "10GiB"
