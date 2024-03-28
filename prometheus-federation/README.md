@@ -26,6 +26,8 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
     5. [배포된 Prometheus 및 Grafana의 hostname 확인](#배포된-prometheus-및-grafana의-hostname-확인)
 5. [수집 metric 확인](#수집-metric-확인)
 6. [그 외](#그-외)
+    1. [monitor와 service 클러스터 파일 분리 이유](#monitor와-service-클러스터-파일-분리-이유)
+    2. [helm upgrade](#helm-upgrade)
 
 <br>
 
@@ -254,6 +256,7 @@ kubectl get svc -n monitoring
 <br>
 
 ## 그 외
+### monitor와 service 클러스터 파일 분리 이유
 **오퍼레이터 실행 시 사용할 `.yaml` 파일 내용 중에서, metric을 수집 당하는 클러스터의 경우에는 target 설정이 필요가 없습니다.** 그래서 중앙에서 metric을 수집하는 클러스터와 수집 당하는 클러스터의 `.yaml` 파일은 서로 구분해서 저장해두는 것이 편합니다.
 
 - 예를 들어서:
@@ -266,6 +269,7 @@ helm install kube-prometheus-stack -f monitor-values.yaml --namespace monitoring
 
 <br>
 
+### helm upgrade
 helm 설치 시 사용한 `.yaml` 파일을 수정하고 재적용시키려는 경우, `helm upgrade` 명령어를 사용할 수 있습니다. 이 때, `-f` 옵션을 사용하여 수정한 모든 `.yaml` 파일을 호출해주어야합니다. 그렇지 않으면 호출되지 않은 파일의 내용은 클러스터에서 제거됩니다. <br>
 
 예를 들어, 위의 `monitor-values.yaml` 파일에서 prometheus, grafana 설정을 두 개의 파일로 분리했다고 가정합니다. 그렇다면 다음과 같이 명령어를 사용할 수 있습니다.
