@@ -1,24 +1,4 @@
-<!-- 
-https://grafana.com/grafana/dashboards/17900-1-kubernetes-all-in-one-cluster-monitoring-kr-v1-26-0/
-    1. monitor-eks: 
-        - monitor-values.yaml
-
-    helm install kube-prometheus-stack -f service-values.yaml --namespace monitoring .
-
-    2. service-eks:
-        - service-values.yaml
-        - alert-manager.yaml
-        - prometheus-rules.yaml
-    
-    helm install -n monitoring kube-prometheus-stack . \
-    -f prometheus-rules.yaml \
-    -f alert-manager.yaml \
-    -f service-values.yaml
-
--->
-
 # Prometheus Federation
-(완성된 문서가 아닙니다.)
 
 ## 공식 문서
 Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/prometheus/latest/federation/)를 확인하세요.<br>
@@ -41,6 +21,9 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 4. [실행 방법](#실행-방법)
     1. [클러스터에 메트릭 서버 추가](#클러스터에-메트릭-서버-추가)
     2. [helm 설치 및 repo 추가](#helm-설치-및-repo-추가)
+    3. [Prometheus를 배포할 EKS 연결](#prometheus를-배포할-eks-연결)
+    4. [helm operator를 통해 Prometheus 배포](#helm-operator를-통해-prometheus-배포)
+    5. [배포된 Prometheus 및 Grafana의 hostname 확인](#배포된-prometheus-및-grafana의-hostname-확인)
 5. [수집 metric 확인](#수집-metric-확인)
 6. [그 외](#그-외)
 
@@ -132,17 +115,21 @@ chmod 700 get_helm.sh
 <details>
     <summary>설치 중 오류가 발생한다면:</summary>
 
-    방법 1. openssl 패키지 설치
-    ```shell
-    yum install -y openssl
-    ```
+<br>
 
-    방법 2. 환경 변수에서 `VERIFY_CHECKSUM`을 `false`로 설정
-    ```shell
-    export VERIFY_CHECKSUM=false
-    ```
+방법 1. openssl 패키지 설치
+```shell
+yum install -y openssl
+```
+
+방법 2. 환경 변수에서 `VERIFY_CHECKSUM`을 `false`로 설정
+```shell
+export VERIFY_CHECKSUM=false
+```
 
 </details>
+
+<br>
 
 - **helm 버전 확인**
 ```shell
@@ -168,9 +155,13 @@ Hang tight while we grab the latest from your chart repositories...
 Update Complete. ⎈Happy Helming!⎈
 ```
 
-### EKS 연결
+### Prometheus를 배포할 EKS 연결
+```shell
+aws eks --region ${eks-region} update-kubeconfig \
+    --name ${eks-name}
+```
 
-### helm operator를 통해 prometheus 배포
+### helm operator를 통해 Prometheus 배포
 1. **namespace 추가**
 ```shell
 kubectl create ns monitoring
@@ -210,7 +201,7 @@ kubectl get svc -n monitoring kube-prometheus-stack-grafana -o jsonpath='{.statu
 # 전체 svc 확인
 kubectl get svc -n monitoring
 ```
-
+명령어 실행 결과로 나오는 `hostname` 값을 통해서 외부 브라우저에서 접근합니다. **(주소 뒤에 포트 번호 추가 필요)**
 
 <br>
 
@@ -285,4 +276,4 @@ helm upgrade -n monitoring kube-prometheus-stack . \
     -f prometheus.yaml
 ```
 
-파일의 우선 순위는 뒤로 갈 수록 높아집니다.
+파일의 우선 순위는 뒤로 갈 수록 높아집니다. 
