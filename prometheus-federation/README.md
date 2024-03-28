@@ -5,6 +5,7 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 
 ## 참고 문서
 - [SeSAC-AWS-Final-Team-2/dev-eks](https://github.com/SeSAC-AWS-Final-Team-2/dev-eks/blob/main/third-party/monitoring.md)
+- [choisungwook/portfolio/kubernetes/helm/prometheus-charts](https://github.com/choisungwook/portfolio/tree/master/kubernetes/helm/prometheus-charts)
 - https://github.com/prometheus-operator/prometheus-operator/issues/2877
 
 <br>
