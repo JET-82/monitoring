@@ -79,8 +79,9 @@ helm pull prometheus-community/kube-prometheus-stack --version 45.7.1
 helm install -n monitoring kube-prometheus-stack . \
     -f monitoir-values.yaml
 ```
-- node exporter 비활성화 (필요에 따라 활성화해도 무관함)
+- node-exporter 비활성화 (필요에 따라 활성화해도 무관함)
 - alertmanager 비활성화 (필요에 따라 활성화해도 무관함)
+- **Prometheus Federation 사용 설정:** `prometheus.prometheusSpec.additionalScrapeConfigs:` 부분 참고
 
 
 ### Service 클러스터의 경우
@@ -178,6 +179,7 @@ cd kube-prometheus-stack
 
 3. **values 파일 작성**
 - [monitor-values.yaml](/prometheus-federation/monitor-values.yaml)
+    - **Prometheus Federation 사용 설정:** `prometheus.prometheusSpec.additionalScrapeConfigs:` 부분 참고
 - [service-values.yaml](/prometheus-federation/service-values.yaml)
 
 4. **values 파일과 namespace 포함하여 helm 배포**
