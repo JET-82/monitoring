@@ -51,9 +51,10 @@ prometheus:
         metrics_path: /monitor # 필요에 맞게 수정 (별다른 설정을 하지 않는 경우, 필요가 없을 수 있음)
         scrape_interval: 10s
         honor_labels: true
-        params:
+        params: # 필요에 맞게 수정
           'match[]':
             - '{__name__=~".+"}'
         static_configs:
+          # 수정 필요
           - targets:
             - '${service-hostname}:${service-port}'
