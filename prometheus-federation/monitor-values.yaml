@@ -1,0 +1,60 @@
+alertmanager:
+  enabled: false # 비활성화
+
+prometheus-node-exporter:
+  enabled: false # 비활성화
+
+grafana:
+  defaultDashboardsTimezone: Asia/Seoul
+  adminPassword: ${grafana-pw} # 생략 가능, default=admin
+  service:
+    type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+
+prometheus:
+  service:
+    type: LoadBalancer
+    port: 30653 # 생략 가능, default=9090
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+      service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 5d
+    retentionSize: "10GiB"
+    additionalScrapeConfigs:
+      # 수정 필요
+      - job_name: federate
+        metrics_path: /federate
+        scrape_interval: 10s
+        honor_labels: true
+        params: # 필요에 맞게 수정
+          'match[]':
+            - '{job="prometheus"}'
+            - '{job="node"}'
+            - '{__name__=~".+"}'
+            - '{__name__=~"job:.*"}'
+            - '{__name__="server_labels"}'
+        static_configs:
+          # 수정 필요
+          - targets:
+            - '${target1-ingress-controller-hostname}:${target1-prometheus-port}'
+            - '${target2-ingress-controller-hostname}:${target2-prometheus-port}'
+      
+      # jmx-exporter를 사용하는 경우: 개발팀과 협의 필요
+      - job_name: jmx-k8s
+        metrics_path: /monitor # 필요에 맞게 수정 (별다른 설정을 하지 않는 경우, 필요가 없을 수 있음)
+        scrape_interval: 10s
+        honor_labels: true
+        params: # 필요에 맞게 수정
+          'match[]':
+            - '{__name__=~".+"}'
+        static_configs:
+          # 수정 필요
+          - targets:
+            - '${service-hostname}:${service-port}'

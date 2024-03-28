@@ -31,7 +31,7 @@
 
 |VM 구분|실행 구분|VM 유형|OS|비고|
 |:--|:--|:--|:--:|:--:|
-|Docker1|Springboot proj|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
+|Docker1|Springboot proj|e2-medium (2 vCPU, 1 Core, 4GiB Mem)|CentOS7|고정 IP 주소 사용|
 |Docker2|Prometheus, Grafana|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
 
 ### Docker compose
