@@ -33,17 +33,21 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 1. [들어가기 전에](#들어가기-전에)
 2. [실행 환경](#실행-환경)
     1. [GCP VM](#gcp-vm)
-    2. [helm-chart/kube-prometheus-stack](#helm-chartkube-prometheus-stack)
-    3. [Amazon EKS](#amazon-eks)
+    2. [Amazon EKS](#amazon-eks)
+    3. [helm-chart/kube-prometheus-stack](#helm-chartkube-prometheus-stack)
 3. [필요 파일](#필요-파일)
+    1. [Monitoring 클러스터의 경우](#monitoring-클러스터의-경우)
+    2. [Service 클러스터의 경우](#service-클러스터의-경우)
 4. [실행 방법](#실행-방법)
+    1. [클러스터에 메트릭 서버 추가](#클러스터에-메트릭-서버-추가)
+    2. [helm 설치 및 repo 추가](#helm-설치-및-repo-추가)
 5. [수집 metric 확인](#수집-metric-확인)
 6. [그 외](#그-외)
 
 <br>
 
 ## 들어가기 전에
-1. helm operator를 사용해 Prometheus와 Grafana를 Amazon EKS(k8s) 환경에서 실행하고 메트릭을 수집합니다.
+1. helm operator와 `kube-prometheus-stack` chart를 사용해 Prometheus와 Grafana를 Amazon EKS(k8s) 환경에서 실행하고 메트릭을 수집합니다.
 2. [Prometheus federation](https://prometheus.io/docs/prometheus/latest/federation/) 기능을 사용하여 여러 클러스터로부터 메트릭을 수집합니다.
 3. 프로젝트 배포 및 EKS(k8s) 환경 설정에 대한 것은 다루지 않습니다.
 
@@ -56,7 +60,7 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 
 |VM 구분|실행 구분|VM 유형|OS|비고|
 |:--|:--|:--|:--:|:--:|
-|operator|helm|e2-medium (2 vCPU, 1 Core, 4 Mem)|CentOS7|고정 IP 주소 사용|
+|operator|helm|e2-medium (2 vCPU, 1 Core, 4GiB Mem)|CentOS7|고정 IP 주소 사용|
 
 
 ### Amazon EKS
@@ -64,7 +68,7 @@ Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/pr
 
 |VM 구분|실행 구분|VM 유형|OS|비고|
 |:--|:--|:--|:--:|:--:|
-|eks managed node group|eks|t3.medium|Amazon Linux 2 AMI|-|
+|eks managed node group|eks|t3.medium (2 vCPU, 1 Core, 4GiB Mem)|Amazon Linux 2 AMI|-|
 
 - **EKS 생성 후 awscli에서 접근:**
 ```shell
@@ -83,19 +87,129 @@ helm pull prometheus-community/kube-prometheus-stack --version 45.7.1
 <br>
 
 ## 필요 파일
-### Prometheus helm 설치 파일 (monitoring cluster)
-- **[monitoir-values.yml](/prometheus-federation/monitor-values.yaml):** Prometheus 설정 파일
+### Monitoring 클러스터의 경우
+- **[monitoir-values.yml](/prometheus-federation/monitor-values.yaml):** 모니터링에 사용할 클러스터에서 helm chart 설치 시 사용할 manifest 파일
+
 ```shell
 helm install -n monitoring kube-prometheus-stack . \
     -f monitoir-values.yaml
 ```
+- node exporter 비활성화 (필요에 따라 활성화해도 무관함)
+- alertmanager 비활성화 (필요에 따라 활성화해도 무관함)
 
-### Prometheus helm 설치 파일 (service cluster)
-- **[service-values.yml](/prometheus-federation/service-values.yaml):** 서비스가 배포된 cluster에서 helm 설치 시 사용할 manifest 파일
+
+### Service 클러스터의 경우
+- **[service-values.yml](/prometheus-federation/service-values.yaml):** 서비스가 배포된 클러스터에서 helm chart 설치 시 사용할 manifest 파일
+
+```shell
+helm install -n monitoring kube-prometheus-stack . \
+    -f service-values.yaml
+```
 
 <br>
 
 ## 실행 방법
+### 클러스터에 메트릭 서버 추가
+- **Deploy Metrics Server**
+```shell
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+- **확인**
+```shell
+kubectl get deployment metrics-server -n kube-system
+```
+
+### helm 설치 및 repo 추가
+> [helm 설치 가이드 - helm docs](https://helm.sh/ko/docs/intro/install/)
+1. **helm 설치 (CentOS7)**
+```shell
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+```
+```shell
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+<details>
+    <summary>설치 중 오류가 발생한다면:</summary>
+
+    방법 1. openssl 패키지 설치
+    ```shell
+    yum install -y openssl
+    ```
+
+    방법 2. 환경 변수에서 `VERIFY_CHECKSUM`을 `false`로 설정
+    ```shell
+    export VERIFY_CHECKSUM=false
+    ```
+
+</details>
+
+- **helm 버전 확인**
+```shell
+helm version
+```
+```shell
+# 결과
+version.BuildInfo{Version:"v3.14.2", GitCommit:"c309b6f0ff63856811846ce18f3bdc93d2b4d54b", GitTreeState:"clean", GoVersion:"go1.21.7"}
+```
+
+2. **helm repo 추가**
+```shell
+# [prometheus-community] repo 추가
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+```
+```shell
+helm repo update
+```
+```shell
+# 결과
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "prometheus-community" chart repository
+Update Complete. ⎈Happy Helming!⎈
+```
+
+### EKS 연결
+
+### helm operator를 통해 prometheus 배포
+1. **namespace 추가**
+```shell
+kubectl create ns monitoring
+```
+
+2. **`.tgz` 형태로 helm chart 파일 가져오기**
+```shell
+helm pull prometheus-community/kube-prometheus-stack --version 45.7.1     
+tar -xvzf kube-prometheus-stack-45.7.1.tgz 
+cd kube-prometheus-stack         
+```
+
+3. **values 파일 작성**
+- [monitor-values.yaml](/prometheus-federation/monitor-values.yaml)
+- [service-values.yaml](/prometheus-federation/service-values.yaml)
+
+4. **values 파일과 namespace 포함하여 helm 배포**
+```shell
+helm install -n monitoring kube-prometheus-stack . \
+    -f monitoir-values.yaml
+```
+혹은
+```shell
+helm install -n monitoring kube-prometheus-stack . \
+    -f service-values.yaml
+```
+
+### 배포된 Prometheus 및 Grafana의 hostname 확인
+```shell
+# prometheus
+kubectl get svc -n monitoring kube-prometheus-stack-prometheus -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+
+# grafana
+kubectl get svc -n monitoring kube-prometheus-stack-grafana -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+```
+```shell
+# 전체 svc 확인
+kubectl get svc -n monitoring
+```
 
 
 <br>
