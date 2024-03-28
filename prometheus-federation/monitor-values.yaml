@@ -45,5 +45,15 @@ prometheus:
           - targets:
             - '${target1-ingress-controller-hostname}:${target1-prometheus-port}'
             - '${target2-ingress-controller-hostname}:${target2-prometheus-port}'
-      # - job_name: 
-      # - job_name: jmx
+      
+      # jmx-exporter를 사용하는 경우: 개발팀과 협의 필요
+      - job_name: jmx-k8s
+        metrics_path: /monitor # 필요에 맞게 수정 (별다른 설정을 하지 않는 경우, 필요가 없을 수 있음)
+        scrape_interval: 10s
+        honor_labels: true
+        params:
+          'match[]':
+            - '{__name__=~".+"}'
+        static_configs:
+          - targets:
+            - '${service-hostname}:${service-port}'
