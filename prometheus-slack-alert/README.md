@@ -1,4 +1,7 @@
-# Prometheus Alert Manager - Slack Incoming Webhook
+# Prometheus Alertmanager - Slack Incoming Webhook
+
+## 공식 문서
+- [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
 
 ## 참고 문서
 - [Prometheus Alerting - 토리맘의 한글라이즈 프로젝트](https://godekdls.github.io/Prometheus/alerting/)
@@ -112,7 +115,7 @@ expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|i
 annotations:
   summary: "{{ $labels.instance }} CPU 사용량 45% 초과"
 ```
-- `{{ $labels.instance }}`: 경고가 발생한 인스턴스의 이름을 의미합니다.
+- **`{{ $labels.instance }}`:** 경고가 발생한 인스턴스의 이름을 의미합니다.
 
 <br>
 
