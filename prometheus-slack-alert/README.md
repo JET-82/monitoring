@@ -1,7 +1,7 @@
 # Prometheus Alertmanager - Slack Incoming Webhook
 
 ## 공식 문서
-- [Prometheus Alertmanager](https://prometheus.io/docs/alerting/latest/alertmanager/)
+- [Prometheus Alerting](https://prometheus.io/docs/alerting/latest/overview/)
 
 ## 참고 문서
 - [Prometheus Alerting - 토리맘의 한글라이즈 프로젝트](https://godekdls.github.io/Prometheus/alerting/)
@@ -93,7 +93,7 @@ additionalPrometheusRulesMap:
 expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[1m])) + on (instance) group_left(nodename) node_uname_info - 1) > 0.45
 ```
 <details>
-    <summary> 계산식 해설:</summary>
+    <summary> 계산식 해설</summary>
 
 <br>
 
@@ -151,4 +151,14 @@ receivers:
 
 ## 실행 방법
 
-### 
+### Slack Webhook 설정 (Create an App)
+![slackapi1](/prometheus-slack-alert/img/slackapi1.png)
+![slackapi2](/prometheus-slack-alert/img/slackapi2.png)
+![slackapi3](/prometheus-slack-alert/img/slackapi3.png)
+![slackapi4](/prometheus-slack-alert/img/slackapi4.png)
+![slackapi5](/prometheus-slack-alert/img/slackapi5.png)
+![slackapi6](/prometheus-slack-alert/img/slackapi6.png)
+```shell
+curl -X POST -H 'Content-type: application/json' --data '{"text":"hello world"}' https://hooks.slack.com/services/...
+```
+![slackapi7](/prometheus-slack-alert/img/slackapi7.png)
