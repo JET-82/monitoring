@@ -1,5 +1,10 @@
 # Prometheus Alert Manager - Slack Incoming Webhook
 
+## 참고 문서
+- [Prometheus Alerting rules - 토리맘의 한글라이즈 프로젝트](https://godekdls.github.io/Prometheus/alerting-rules/)
+
+<br>
+
 ### 목차
 1. [들어가기 전에](#들어가기-전에)
 2. [실행 환경](#실행-환경)
@@ -49,12 +54,10 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm pull prometheus-community/kube-prometheus-stack --version 45.7.1
 ```
 
-## 필요 파일
-[helm-chart/kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)를 사용하여 Prometheus를 배포하기 때문에, 설정 `.yaml` 파일은 helm chart 사용을 기준으로 작성되었습니다.
+<br>
 
-- **[prometheus-rules.yaml](/prometheus-slack-alert/prometheus-rules.yaml):** `additionalPrometheusRulesMap` 항목에 alert(경보) 규칙 설정
-- **[alertmanager.yaml](/prometheus-slack-alert/alertmanager.yaml):** alert(경보) 수신 설정
-- **[values.yaml](/prometheus-federation/service-values.yaml):** Prometheus, Grafana 배포 설정
+## 필요 파일
+[helm-chart/kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)를 사용하여 Prometheus를 배포하기 때문에, 설정 `.yaml` 파일은 helm chart 사용을 기준으로 작성되었습니다. `.yaml` 파일은 `-f` 옵션을 사용하여 아래처럼 호출합니다.
 
 ```shell
 helm install -n monitoring kube-prometheus-stack . \
@@ -62,6 +65,66 @@ helm install -n monitoring kube-prometheus-stack . \
     -f alertmanager.yaml \
     -f values.yaml
 ```
+
+1. **[prometheus-rules.yaml](/prometheus-slack-alert/prometheus-rules.yaml):** `additionalPrometheusRulesMap` 항목에 alert(경보) 규칙 설정
+```yaml
+additionalPrometheusRulesMap:
+  cpuusagerules:
+    groups:
+      - name: cpu-usage-warning  # group name
+        rules:  # 아래부터 규칙 설정
+          - alert: cpu-usage_45  # alert 구분: alertmanager.yaml에서 이 이름을 참고합니다.
+            # expr: 규칙 계산식
+            expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[1m])) + on(instance) group_left(nodename) node_uname_info - 1) > 0.45
+            for: 1m
+            labels:
+              severity: warning
+            annotations:  # 경보 메시지 정보
+              # summary: 주제, description: 부가 설명
+              summary: "{{ $labels.instance }} CPU 사용량 45% 초과"
+              description: "CPU 사용량이 45%를 초과하였습니다."
+      # - name: 
+```
+```yaml
+# vCPU 사용률 계산
+expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[1m])) + on (instance) group_left(nodename) node_uname_info - 1) > 0.45
+```
+<details>
+    <summary> 계산식 해설:</summary>
+
+<br>
+
+- `sum by (instance, nodename) (...)`: 각 인스턴스와 노드 이름별로 CPU 사용률의 합을 구합니다.
+- `irate(...) [1m]`: 선택된 시간 범위(1m) 동안의 증가율(irate=instant rate)을 계산합니다.
+- `node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}`: CPU 사용 모드 중 `guest`로 시작하는 모든 모드, `idle` 및 `iowait` 상태를 제외한 CPU 시간(초)을 측정합니다. (guest 모드는 가상화 환경에서 작동하는 가상 CPU(vCPU)의 사용을 나타냅니다.)
+
+- `on (instance) group_left(nodename)`: `sum by (...)`로부터 얻은 결과와 `node_uname_info` 메트릭을 `instance`를 기준으로 left join하면서 `nodename`을 유지합니다. (`group_left`는 조인하는 두 쪽 중 왼쪽(첫 번째 메트릭)에 레이블이 없는 경우에 사용)
+    - `node_uname_info` 메트릭은 시스템에 대한 정보(예: 운영 체제, 노드 이름 등)를 제공합니다. (이 정보는 레이블로 포함되어 있으며, 여기서는 주로 `nodename`을 사용.)
+
+- 마지막에 `1`을 빼는 이유: `node_uname_info`가 실제로 CPU 사용에 기여하지 않기 때문에, 이를 보정하기 위함입니다.
+- `( ... ) > 0.45`: 최종적으로 계산된 값이 `0.45`를 초과하는 경우에 경고가 발생합니다. (0.45 = 45%)
+
+</details>
+
+<br>
+
+```yaml
+annotations:
+  summary: "{{ $labels.instance }} CPU 사용량 45% 초과"
+```
+- `{{ $labels.instance }}`: 경고가 발생한 인스턴스의 이름을 의미합니다.
+
+<br>
+
+2. **[alertmanager.yaml](/prometheus-slack-alert/alertmanager.yaml):** alert(경보) 수신 설정
+```shell
+
+```
+
+3. **[values.yaml](/prometheus-federation/service-values.yaml):** Prometheus, Grafana 배포 설정
+
+
+<br>
 
 ## 실행 방법
 
