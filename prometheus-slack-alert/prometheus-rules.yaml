@@ -1,5 +1,5 @@
 additionalPrometheusRulesMap:
-  cpuusagerules:
+  cpuusagerules:  # 수정 가능한 설정명
     groups:
       - name: cpu-usage-warning
         rules:
