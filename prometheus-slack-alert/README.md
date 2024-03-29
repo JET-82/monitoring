@@ -18,7 +18,8 @@
 3. [필요 파일](#필요-파일)
 4. [실행 방법](#실행-방법)
     1. [Slack Webhook 설정 (Create an App)](#slack-webhook-설정-create-an-app)
-    2. [CPU 부하 테스트를 통한 메시지 수신 확인](#cpu-부하-테스트를-통한-메시지-수신-확인)
+    2. [설정 파일을 포함하여 Prometheus 배포](#설정-파일을-포함하여-prometheus-배포)
+    3. [CPU 부하 테스트를 통한 메시지 수신 확인](#cpu-부하-테스트를-통한-메시지-수신-확인)
 
 <br>
 
@@ -189,6 +190,15 @@ curl -X POST -H 'Content-type: application/json' --data '{"text":"hello world"}'
 ![slackapi7](/prometheus-slack-alert/img/slackapi7.png)
 
 <br>
+
+### 설정 파일을 포함하여 Prometheus 배포
+
+```shell
+helm install -n monitoring kube-prometheus-stack . \
+    -f prometheus-rules.yaml \
+    -f alertmanager.yaml \
+    -f values.yaml
+```
 
 ### CPU 부하 테스트를 통한 메시지 수신 확인
 CPU에 임의로 부하를 주어 Alertmanager 설정이 잘 적용되었는지 확인합니다. 저는 [nGrinder](https://naver.github.io/ngrinder/)를 사용하였습니다.
