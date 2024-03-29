@@ -1,7 +1,7 @@
 # Prometheus Alert Manager - Slack Incoming Webhook
 
 ## 참고 문서
-- [Prometheus Alerting rules - 토리맘의 한글라이즈 프로젝트](https://godekdls.github.io/Prometheus/alerting-rules/)
+- [Prometheus Alerting - 토리맘의 한글라이즈 프로젝트](https://godekdls.github.io/Prometheus/alerting/)
 
 <br>
 
@@ -94,15 +94,15 @@ expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|i
 
 <br>
 
-- `sum by (instance, nodename) (...)`: 각 인스턴스와 노드 이름별로 CPU 사용률의 합을 구합니다.
-- `irate(...) [1m]`: 선택된 시간 범위(1m) 동안의 증가율(irate=instant rate)을 계산합니다.
-- `node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}`: CPU 사용 모드 중 `guest`로 시작하는 모든 모드, `idle` 및 `iowait` 상태를 제외한 CPU 시간(초)을 측정합니다. (guest 모드는 가상화 환경에서 작동하는 가상 CPU(vCPU)의 사용을 나타냅니다.)
+- **`sum by (instance, nodename) (...)`:** 각 인스턴스와 노드 이름별로 CPU 사용률의 합을 구합니다.
+- **`irate(...) [1m]`:** 선택된 시간 범위(1m) 동안의 증가율(irate=instant rate)을 계산합니다.
+- **`node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}`:** CPU 사용 모드 중 `guest`로 시작하는 모든 모드, `idle` 및 `iowait` 상태를 제외한 CPU 시간(초)을 측정합니다. (guest 모드는 가상화 환경에서 작동하는 가상 CPU(vCPU)의 사용을 나타냅니다.)
 
-- `on (instance) group_left(nodename)`: `sum by (...)`로부터 얻은 결과와 `node_uname_info` 메트릭을 `instance`를 기준으로 left join하면서 `nodename`을 유지합니다. (`group_left`는 조인하는 두 쪽 중 왼쪽(첫 번째 메트릭)에 레이블이 없는 경우에 사용)
+- **`on (instance) group_left(nodename)`:** `sum by (...)`로부터 얻은 결과와 `node_uname_info` 메트릭을 `instance`를 기준으로 left join하면서 `nodename`을 유지합니다. (`group_left`는 조인하는 두 쪽 중 왼쪽(첫 번째 메트릭)에 레이블이 없는 경우에 사용)
     - `node_uname_info` 메트릭은 시스템에 대한 정보(예: 운영 체제, 노드 이름 등)를 제공합니다. (이 정보는 레이블로 포함되어 있으며, 여기서는 주로 `nodename`을 사용.)
 
-- 마지막에 `1`을 빼는 이유: `node_uname_info`가 실제로 CPU 사용에 기여하지 않기 때문에, 이를 보정하기 위함입니다.
-- `( ... ) > 0.45`: 최종적으로 계산된 값이 `0.45`를 초과하는 경우에 경고가 발생합니다. (0.45 = 45%)
+- **마지막에 `1`을 빼는 이유:** `node_uname_info`가 실제로 CPU 사용에 기여하지 않기 때문에, 이를 보정하기 위함입니다.
+- **`( ... ) > 0.45`:** 최종적으로 계산된 값이 `0.45`를 초과하는 경우에 경고가 발생합니다. (0.45 = 45%)
 
 </details>
 
@@ -117,9 +117,29 @@ annotations:
 <br>
 
 2. **[alertmanager.yaml](/prometheus-slack-alert/alertmanager.yaml):** alert(경보) 수신 설정
-```shell
-
+```yaml
+receivers:
+  - name: 'default-receiver'  # default alert에 대한 receiver 설정
+    slack_configs:
+      # Slack api 에서 발급받은 url
+      - api_url: '${#alert-heartbeat-channel-api-url}' # https://hooks.slack.com/services/...
+        # Slack Channel 명
+        channel: '#alert-heartbeat'
+        send_resolved: true  # 해소된(resolved) alert도 통보할지 여부, default = false
+        title: '{{ .CommonAnnotations.summary }}'
+        text: '{{ .CommonAnnotations.description }}'
+  - name: 'cpu-usage_45'  # custom alert에 대한 receiver 설정
+    slack_configs:
+      - api_url: '${#alert-warning-channel-api-url}' # https://hooks.slack.com/services/...
+        channel: '#alert-warning'
+        send_resolved: true
+        title: '{{ .CommonAnnotations.summary }}'
+        text: '{{ .CommonAnnotations.description }}'
 ```
+- **`title: '{{ .CommonAnnotations.summary }}'`:** `prometheus-rules.yaml` 파일에 작성된 `rules.annotations.summary` 정보를 가져와 Slack 경보 메시지로 출력합니다.
+- **`text: '{{ .CommonAnnotations.description }}'`:** `prometheus-rules.yaml` 파일에 작성된 `rules.annotations.description` 정보를 가져와 Slack 경보 메시지로 출력합니다.
+
+<br>
 
 3. **[values.yaml](/prometheus-federation/service-values.yaml):** Prometheus, Grafana 배포 설정
 
