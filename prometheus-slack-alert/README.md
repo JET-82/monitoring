@@ -5,6 +5,7 @@
 
 ## 참고 문서
 - [Prometheus Alerting - 토리맘의 한글라이즈 프로젝트](https://godekdls.github.io/Prometheus/alerting/)
+- [1 Kubernetes All-in-one Cluster Monitoring KR](https://grafana.com/grafana/dashboards/13770-1-kubernetes-all-in-one-cluster-monitoring-kr/)
 
 <br>
 
@@ -16,6 +17,8 @@
     3. [helm-chart/kube-prometheus-stack](#helm-chartkube-prometheus-stack)
 3. [필요 파일](#필요-파일)
 4. [실행 방법](#실행-방법)
+    1. [Slack Webhook 설정 (Create an App)](#slack-webhook-설정-create-an-app)
+    2. [CPU 부하 테스트를 통한 메시지 수신 확인](#cpu-부하-테스트를-통한-메시지-수신-확인)
 
 <br>
 
@@ -152,13 +155,43 @@ receivers:
 ## 실행 방법
 
 ### Slack Webhook 설정 (Create an App)
+1. **https://api.slack.com/apps 접속**
+2. **[Create an App] 버튼 클릭**
+
 ![slackapi1](/prometheus-slack-alert/img/slackapi1.png)
+
+3. **From scratch** 선택
+
 ![slackapi2](/prometheus-slack-alert/img/slackapi2.png)
+
+4. **App Name 작성, Slack 워크스페이스 선택**
+
 ![slackapi3](/prometheus-slack-alert/img/slackapi3.png)
+
+5. **[Incoming Webhooks] → [App New Webhook to Workspace] 클릭**
+
 ![slackapi4](/prometheus-slack-alert/img/slackapi4.png)
+
+6. **Incoming Webhook가 액세스할 Slack 채널 선택**
+
 ![slackapi5](/prometheus-slack-alert/img/slackapi5.png)
+
+7. **부여된 Webhook URL을 사용하여 메시지 전송 테스트**
+
 ![slackapi6](/prometheus-slack-alert/img/slackapi6.png)
 ```shell
 curl -X POST -H 'Content-type: application/json' --data '{"text":"hello world"}' https://hooks.slack.com/services/...
 ```
+**(주의)** Webhook URL은 외부에 노출되지 않도록 주의합니다.
+
+8. **채널에서 전송된 메시지 확인**
+
 ![slackapi7](/prometheus-slack-alert/img/slackapi7.png)
+
+<br>
+
+### CPU 부하 테스트를 통한 메시지 수신 확인
+CPU에 임의로 부하를 주어 Alertmanager 설정이 잘 적용되었는지 확인합니다. 저는 [nGrinder](https://naver.github.io/ngrinder/)를 사용하였습니다.
+- nGrinder와 관련하여 작성한 블로그 글은 [여기](https://jungeun5-choi.github.io/categories/#ngrinder)를 참고해주세요.
+
+![slack-message1](/prometheus-slack-alert/img/slack-message1.png)
