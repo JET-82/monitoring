@@ -160,7 +160,7 @@ receivers:
 
 ![slackapi1](/prometheus-slack-alert/img/slackapi1.png)
 
-3. **From scratch** 선택
+3. **[From scratch] 선택**
 
 ![slackapi2](/prometheus-slack-alert/img/slackapi2.png)
 
@@ -192,6 +192,6 @@ curl -X POST -H 'Content-type: application/json' --data '{"text":"hello world"}'
 
 ### CPU 부하 테스트를 통한 메시지 수신 확인
 CPU에 임의로 부하를 주어 Alertmanager 설정이 잘 적용되었는지 확인합니다. 저는 [nGrinder](https://naver.github.io/ngrinder/)를 사용하였습니다.
-- nGrinder와 관련하여 작성한 블로그 글은 [여기](https://jungeun5-choi.github.io/categories/#ngrinder)를 참고해주세요.
+- nGrinder 사용과 관련하여 작성한 블로그 글은 [여기](https://jungeun5-choi.github.io/categories/#ngrinder)를 참고해주세요.
 
 ![slack-message1](/prometheus-slack-alert/img/slack-message1.png)
