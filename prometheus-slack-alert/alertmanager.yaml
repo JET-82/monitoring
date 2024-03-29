@@ -23,7 +23,7 @@ alertmanager:
         slack_configs:
           - api_url: '${#alert-heartbeat-channel-api-url}' # https://hooks.slack.com/services/...
             channel: '#alert-heartbeat'
-            send_resolved: true
+            send_resolved: true  # 해소된(resolved) alert도 통보할지 여부, default = false
             title: '{{ .CommonAnnotations.summary }}'
             text: '{{ .CommonAnnotations.description }}'
 
@@ -31,7 +31,6 @@ alertmanager:
         slack_configs:
           - api_url: '${#alert-warning-channel-api-url}' # https://hooks.slack.com/services/...
             channel: '#alert-warning'
-            send_resolved: true
             title: '{{ .CommonAnnotations.summary }}'
             text: '{{ .CommonAnnotations.description }}'
 
@@ -39,6 +38,5 @@ alertmanager:
         slack_configs:
           - api_url: '${#alert-critical-channel-api-url}' # https://hooks.slack.com/services/...
             channel: '#alert-critical'
-            send_resolved: true
             title: '{{ .CommonAnnotations.summary }}'
             text: '{{ .CommonAnnotations.description }}'
