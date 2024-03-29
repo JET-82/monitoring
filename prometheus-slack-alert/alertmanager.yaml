@@ -1,0 +1,42 @@
+alertmanager:
+  alermanagerSpec:
+    listenLocal: true
+  config:
+    global:
+      resolve_timeout: 5m
+    route:
+      group_by: ['alertname', 'instance']
+      group_wait: 30s
+      group_interval: 1m
+      repeat_interval: 25m
+      receiver: 'default-receiver' # 따로 설정하지 않은 default alert에 대한 receiver
+      routes: # custom alert에 대한 receiver
+        - match:
+            alertname: cpu-usage_45
+          receiver: 'cpu-usage_45'
+        - match:
+            alertname: high-cpu-usage_75
+          receiver: 'high-cpu-usage_75'
+
+    receivers:
+      - name: 'default-receiver'
+        slack_configs:
+          - api_url: '${#alert-heartbeat-channel-api-url}' # https://hooks.slack.com/services/...
+            channel: '#alert-heartbeat'
+            send_resolved: true  # 해소된(resolved) alert도 통보할지 여부, default = false
+            title: '{{ .CommonAnnotations.summary }}'
+            text: '{{ .CommonAnnotations.description }}'
+
+      - name: 'cpu-usage_45'
+        slack_configs:
+          - api_url: '${#alert-warning-channel-api-url}' # https://hooks.slack.com/services/...
+            channel: '#alert-warning'
+            title: '{{ .CommonAnnotations.summary }}'
+            text: '{{ .CommonAnnotations.description }}'
+
+      - name: 'high-cpu-usage_75'
+        slack_configs:
+          - api_url: '${#alert-critical-channel-api-url}' # https://hooks.slack.com/services/...
+            channel: '#alert-critical'
+            title: '{{ .CommonAnnotations.summary }}'
+            text: '{{ .CommonAnnotations.description }}'

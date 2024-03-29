@@ -1,5 +1,13 @@
 # Prometheus Federation
 
+**Prometheus Federation**을 사용하여 아래 이미지와 같은 중앙 집중식 메트릭 수집을 목표로 합니다. <br>
+
+![architecture-federate](/prometheus-federation/img/architecture-federate.png)
+
+- 한 곳에서 모든 클러스터의 메트릭을 관측하기 때문에, 모든 메트릭을 수집하도록 하면, 수집 클러스터(여기서는 모니터링 클러스터)에 부하가 올 수 있습니다. 많은 수의 클러스터를 관측한다면, 한정된 메트릭만을 수집하도록 설정 파일을 수정하는 것을 권장합니다.
+- 더 나은 중앙 집중 메트릭 수집 솔루션으로는 [Thanos](https://thanos.io/) 등이 있습니다.
+
+
 ## 공식 문서
 Prometheus Federation에 대한 문서는 [여기](https://prometheus.io/docs/prometheus/latest/federation/)를 확인하세요.<br>
 

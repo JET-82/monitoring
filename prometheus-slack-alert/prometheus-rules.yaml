@@ -1,0 +1,23 @@
+additionalPrometheusRulesMap:
+  cpuusagerules:  # 수정 가능한 설정명
+    groups:
+      - name: cpu-usage-warning
+        rules:
+          - alert: cpu-usage_45
+            expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[1m])) + on(instance) group_left(nodename) node_uname_info - 1) > 0.45
+            for: 1m
+            labels:
+              severity: warning
+            annotations:
+              summary: "{{ $labels.instance }} CPU 사용량 45% 초과"
+              description: "CPU 사용량이 45%를 초과하였습니다."
+      - name: cpu-usage-critical
+        rules:
+          - alert: high-cpu-usage_75
+            expr: (sum by (instance,nodename) (irate(node_cpu_seconds_total{mode!~"guest.*|idle|iowait"}[1m])) + on(instance) group_left(nodename) node_uname_info - 1) > 0.75
+            for: 1m
+            labels:
+              severity: critical
+            annotations:
+              summary: "{{ $labels.instance }} CPU 사용량 75% 초과"
+              description: "CPU 사용량이 75%를 초과하여, 굉장히 높은 사용량을 보입니다."
