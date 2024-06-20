@@ -89,16 +89,16 @@ docker run -p 8080:8080 -p 9090:9090 --name ${container-name} ${image-name}
 ## 수집 metric 확인
 ### jmx http 경로 진입 화면
 
-![http](/jmx-exporter/img/http-jmx-exporter.png)
+![http](/02_jmx-exporter/img/http-jmx-exporter.png)
 
 ### Prometheus에서 Target 확인
 
-![prom](/jmx-exporter/img/prom-jmx-exporter.png)
+![prom](/02_jmx-exporter/img/prom-jmx-exporter.png)
 
 
 ### Grafana에서 Dashboard 설정 후
 
-![graf](/jmx-exporter/img/graf-jmx-dashboard.png)
+![graf](/02_jmx-exporter/img/graf-jmx-dashboard.png)
 
 <br>
 
