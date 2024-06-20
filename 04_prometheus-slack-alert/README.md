@@ -26,7 +26,7 @@
 ## 들어가기 전에
 1. **Slack의 Incoming Webhook(수신 웹후크)** app을 사용하여 alert(경보)를 전달하는 내용을 다룹니다.
 2. helm operator와 `kube-prometheus-stack` chart를 사용해 Prometheus와 Grafana를 Amazon EKS(k8s) 환경에서 실행하고 메트릭을 수집합니다. (* 프로젝트 배포 및 EKS(k8s) 환경 설정에 대한 것은 다루지 않습니다.) 
-    - 자세한 내용은 [prometheus-federation](/prometheus-federation/)에서 다루고 있습니다.
+    - 자세한 내용은 [prometheus-federation](/03_prometheus-federation/)에서 다루고 있습니다.
 
 <br>
 
@@ -73,7 +73,7 @@ helm install -n monitoring kube-prometheus-stack . \
     -f values.yaml
 ```
 
-1. **[prometheus-rules.yaml](/prometheus-slack-alert/prometheus-rules.yaml):** `additionalPrometheusRulesMap` 항목에 alert(경보) 규칙 설정
+1. **[prometheus-rules.yaml](/04_prometheus-slack-alert/prometheus-rules.yaml):** `additionalPrometheusRulesMap` 항목에 alert(경보) 규칙 설정
 ```yaml
 additionalPrometheusRulesMap:
   cpuusagerules:
@@ -123,7 +123,7 @@ annotations:
 
 <br>
 
-2. **[alertmanager.yaml](/prometheus-slack-alert/alertmanager.yaml):** alert(경보) 수신 설정
+2. **[alertmanager.yaml](/04_prometheus-slack-alert/alertmanager.yaml):** alert(경보) 수신 설정
 ```yaml
 receivers:
   - name: 'default-receiver'  # default alert에 대한 receiver 설정
@@ -148,7 +148,7 @@ receivers:
 
 <br>
 
-3. **[values.yaml](/prometheus-federation/service-values.yaml):** Prometheus, Grafana 배포 설정
+3. **[values.yaml](/04_prometheus-federation/service-values.yaml):** Prometheus, Grafana 배포 설정
 
 
 <br>
@@ -159,27 +159,27 @@ receivers:
 1. **https://api.slack.com/apps 접속**
 2. **[Create an App] 버튼 클릭**
 
-![slackapi1](/prometheus-slack-alert/img/slackapi1.png)
+![slackapi1](/04_prometheus-slack-alert/img/slackapi1.png)
 
 3. **[From scratch] 선택**
 
-![slackapi2](/prometheus-slack-alert/img/slackapi2.png)
+![slackapi2](/04_prometheus-slack-alert/img/slackapi2.png)
 
 4. **App Name 작성, Slack 워크스페이스 선택**
 
-![slackapi3](/prometheus-slack-alert/img/slackapi3.png)
+![slackapi3](/04_prometheus-slack-alert/img/slackapi3.png)
 
 5. **[Incoming Webhooks] → [App New Webhook to Workspace] 클릭**
 
-![slackapi4](/prometheus-slack-alert/img/slackapi4.png)
+![slackapi4](/04_prometheus-slack-alert/img/slackapi4.png)
 
 6. **Incoming Webhook가 액세스할 Slack 채널 선택**
 
-![slackapi5](/prometheus-slack-alert/img/slackapi5.png)
+![slackapi5](/04_prometheus-slack-alert/img/slackapi5.png)
 
 7. **부여된 Webhook URL을 사용하여 메시지 전송 테스트**
 
-![slackapi6](/prometheus-slack-alert/img/slackapi6.png)
+![slackapi6](/04_prometheus-slack-alert/img/slackapi6.png)
 ```shell
 curl -X POST -H 'Content-type: application/json' --data '{"text":"hello world"}' https://hooks.slack.com/services/...
 ```
@@ -187,7 +187,7 @@ curl -X POST -H 'Content-type: application/json' --data '{"text":"hello world"}'
 
 8. **채널에서 전송된 메시지 확인**
 
-![slackapi7](/prometheus-slack-alert/img/slackapi7.png)
+![slackapi7](/04_prometheus-slack-alert/img/slackapi7.png)
 
 <br>
 
@@ -204,4 +204,4 @@ helm install -n monitoring kube-prometheus-stack . \
 CPU에 임의로 부하를 주어 Alertmanager 설정이 잘 적용되었는지 확인합니다. 저는 [nGrinder](https://naver.github.io/ngrinder/)를 사용하였습니다.
 - nGrinder 사용과 관련하여 작성한 블로그 글은 [여기](https://jungeun5-choi.github.io/categories/#ngrinder)를 참고해주세요.
 
-![slack-message1](/prometheus-slack-alert/img/slack-message1.png)
+![slack-message1](/04_prometheus-slack-alert/img/slack-message1.png)
