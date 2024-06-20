@@ -2,7 +2,7 @@
 
 **Prometheus Federation**을 사용하여 아래 이미지와 같은 중앙 집중식 메트릭 수집을 목표로 합니다. <br>
 
-![architecture-federate](/prometheus-federation/img/architecture-federate.png)
+![architecture-federate](/03_prometheus-federation/img/architecture-federate.png)
 
 - 한 곳에서 모든 클러스터의 메트릭을 관측하기 때문에, 모든 메트릭을 수집하도록 하면, 수집 클러스터(여기서는 모니터링 클러스터)에 부하가 올 수 있습니다. 많은 수의 클러스터를 관측한다면, 한정된 메트릭만을 수집하도록 설정 파일을 수정하는 것을 권장합니다.
 - 더 나은 중앙 집중 메트릭 수집 솔루션으로는 [Thanos](https://thanos.io/) 등이 있습니다.
@@ -82,7 +82,7 @@ helm pull prometheus-community/kube-prometheus-stack --version 45.7.1
 
 ## 필요 파일
 ### Monitoring 클러스터의 경우
-- **[monitoir-values.yml](/prometheus-federation/monitor-values.yaml):** 모니터링에 사용할 클러스터에서 helm chart 설치 시 사용할 manifest 파일
+- **[monitoir-values.yml](/03_prometheus-federation/monitor-values.yaml):** 모니터링에 사용할 클러스터에서 helm chart 설치 시 사용할 manifest 파일
 
 ```shell
 helm install -n monitoring kube-prometheus-stack . \
@@ -94,7 +94,7 @@ helm install -n monitoring kube-prometheus-stack . \
 
 
 ### Service 클러스터의 경우
-- **[service-values.yml](/prometheus-federation/service-values.yaml):** 서비스가 배포된 클러스터에서 helm chart 설치 시 사용할 manifest 파일
+- **[service-values.yml](/03_prometheus-federation/service-values.yaml):** 서비스가 배포된 클러스터에서 helm chart 설치 시 사용할 manifest 파일
 
 ```shell
 helm install -n monitoring kube-prometheus-stack . \
@@ -187,9 +187,9 @@ cd kube-prometheus-stack
 ```
 
 3. **values 파일 작성**
-- [monitor-values.yaml](/prometheus-federation/monitor-values.yaml)
+- [monitor-values.yaml](/03_prometheus-federation/monitor-values.yaml)
     - **Prometheus Federation 사용 설정:** `prometheus.prometheusSpec.additionalScrapeConfigs:` 부분 참고
-- [service-values.yaml](/prometheus-federation/service-values.yaml)
+- [service-values.yaml](/03_prometheus-federation/service-values.yaml)
 
 4. **values 파일과 namespace 포함하여 helm 배포**
 ```shell
@@ -221,27 +221,27 @@ kubectl get svc -n monitoring
 ## 수집 metric 확인
 ### /federate http 경로 진입 화면
 
-![http](/prometheus-federation/img/http-federate.png)
+![http](/03_prometheus-federation/img/http-federate.png)
 
 ### Prometheus에서 Target 확인
 
 #### case 1. 1개의 EKS만 타겟에 추가
-![prom1](/prometheus-federation/img/prom-federate1.png)
+![prom1](/03_prometheus-federation/img/prom-federate1.png)
 
 #### case 2. 2개의 EKS와 1개의 JMX exporter를 타겟에 추가
-![prom2](/prometheus-federation/img/prom-federate2.png)
+![prom2](/03_prometheus-federation/img/prom-federate2.png)
 
 ### Grafana에서 Dashboard 설정 후
 > metric 수집 클러스터의 노드 3개 + 관찰 클러스터 노드 3개 = 총 6개의 노드
 
 #### case 1. 1개의 EKS만 타겟에 추가
-![graf1](/prometheus-federation/img/graf-federate1.png)
-![graf2](/prometheus-federation/img/graf-federate2.png)
+![graf1](/03_prometheus-federation/img/graf-federate1.png)
+![graf2](/03_prometheus-federation/img/graf-federate2.png)
 
 #### case 2. JMX exporter metric 확인 (임시)
 
-![jmx1](/prometheus-federation/img/jmx-example1.png)
-![jmx2](/prometheus-federation/img/jmx-example2.png)
+![jmx1](/03_prometheus-federation/img/jmx-example1.png)
+![jmx2](/03_prometheus-federation/img/jmx-example2.png)
 
 <br>
 
