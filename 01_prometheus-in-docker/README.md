@@ -114,16 +114,16 @@ docker run -p 8080:8080 --name ${container-name} ${image-name}
 ```
 http://${vm-public-ip}:8080/actuator/prometheus
 ```
-![http](/prometheus-in-docker/img/http-actuator-prometheus.png)
+![http](/01_prometheus-in-docker/img/http-actuator-prometheus.png)
 
 ### Prometheus에서 Target 확인
 
-![prom](/prometheus-in-docker/img/prom-actuator.png)
+![prom](/01_prometheus-in-docker/img/prom-actuator.png)
 
 
 ### Grafana에서 Dashboard 설정 후
 
-![graf](/prometheus-in-docker/img/graf-actuator.png)
+![graf](/01_prometheus-in-docker/img/graf-actuator.png)
 
 <br>
 
