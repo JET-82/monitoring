@@ -43,7 +43,7 @@
 ### Springboot
 - prometheus가 metric 정보를 가져올 **Springboot 프로젝트**
 - Dockerfile: `docker build` 시 필요 (특별한 옵션 필요 X)
-- **[application.yml](/prometheus-in-docker/application.yml):** metric 수집 허용 정보
+- **[application.yml](/01_prometheus-in-docker/application.yml):** metric 수집 허용 정보
 - **`build.gradle` 의존성** 추가
     ```gradle
     dependencies {
@@ -54,8 +54,8 @@
     ```
 
 ### Prometheus, Grafana
-- **[prometheus.yml](/prometheus-in-docker/prometheus.yml):** Prometheus 설정 파일
-- **[docker-compose.yml](/prometheus-in-docker/docker-compose.yml):** docker-compose 실행 파일
+- **[prometheus.yml](/01_prometheus-in-docker/prometheus.yml):** Prometheus 설정 파일
+- **[docker-compose.yml](/01_prometheus-in-docker/docker-compose.yml):** docker-compose 실행 파일
 
 <br>
 
